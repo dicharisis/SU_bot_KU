@@ -46,7 +46,6 @@ class Parser():
     def extract_info(self):   
 
         #Find all elements of Locator.LEVEL_3
-        print(f'Get ({Locators.LEVEL_3}) tag attribute the parsed page')
 
         numbers=Nums()
      
@@ -62,12 +61,10 @@ class Parser():
         sudoku_nums_list=[]
         
         for item in web_elements_level_3:
-           
-            for number in numbers.num:
+                     
+            if item in numbers.num:
+                sudoku_nums_list.append(numbers.num[item])
                 
-                if item==number:
-                    sudoku_nums_list.append(numbers.num[number])
-                    break
             else:
                 sudoku_nums_list.append(0)    
 

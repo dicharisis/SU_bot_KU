@@ -1,7 +1,8 @@
 from Parser import Parser
-from Numbers_Draw import Nums
-
+from Locators import Locators
+from puzzle import PUZZLE
 import os
+
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,11 +21,17 @@ chrome.get("https://sudoku.com/")
 
 
 try:
-    element=WebDriverWait(chrome,5).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,'td.game-cell')) )
+    element=WebDriverWait(chrome,11).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
     print("page is ready")
 except TimeoutException:
     print("Page loading took too much")
 
 parser=Parser(chrome)
 
-print(parser.extract_info)
+my_puzzle=PUZZLE(parser.extract_info)
+print("***********THIS IS __str__**************")
+print(my_puzzle)
+print("")
+print("***********THIS IS __repr__*************")
+print([my_puzzle]
+)
