@@ -29,6 +29,12 @@ except TimeoutException:
 parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
+my_puzzle.check_puzzle
+
+my_puzzle.row_solver
+my_puzzle.check_puzzle
+my_puzzle.row_solver
+
 print("***********THIS IS __str__**************")
 print(my_puzzle)
 print("")
