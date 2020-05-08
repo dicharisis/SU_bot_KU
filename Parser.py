@@ -1,6 +1,12 @@
 from Locators import Locators
 from Numbers_Draw import Nums
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+import time
 
 class Parser():
 
@@ -22,19 +28,28 @@ class Parser():
         
         except NoSuchElementException: 
             
-            print("*****NOTHING FOUND*****")
-            
+            print("**LEVEL_1***NOTHING FOUND*****")
+     
         
         #Find all elements of Locator.LEVEL_2
         print(f'Find ({Locators.LEVEL_2}) tags in already parsed webelements')
+        
+        
+        try:
+            WebDriverWait(self.browser,10).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.LEVEL_2)) )
+            print("found all elements")
+            print(len(web_elements_level_1))
+        except:
+            print("page took too long")
 
-        web_elements_level_2=[]    
+        web_elements_level_2=[]  
         for element in web_elements_level_1:
             try:
                 web_elements_level_2.append(element.find_element_by_css_selector(Locators.LEVEL_2))   
-            except:
+                print("Command executed")
+            except NoSuchElementException:
                 web_elements_level_2.append(0)    
-        
+            
         
         return web_elements_level_2   
      
@@ -73,6 +88,5 @@ class Parser():
 
         return sudoku_nums_list
 
-            
+           
     
-       

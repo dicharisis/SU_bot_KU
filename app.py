@@ -1,7 +1,10 @@
 from Parser import Parser
 from Locators import Locators
 from puzzle import PUZZLE
+from robot import Robot
+
 import os
+import time
 
 
 from selenium import webdriver
@@ -21,19 +24,28 @@ chrome.get("https://sudoku.com/")
 
 
 try:
-    element=WebDriverWait(chrome,11).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
+    WebDriverWait(chrome,11).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
     print("page is ready")
 except TimeoutException:
     print("Page loading took too much")
 
+
+robot=Robot(chrome)
+
+difficulty=input('Select the difficulty of Sudoku : easy || medium || hard || expert :')
+robot.select_difficulty(difficulty)
+
+
 parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
+
 my_puzzle.check_puzzle
 
-my_puzzle.row_solver
-my_puzzle.check_puzzle
-my_puzzle.row_solver
+counter=0
+while(my_puzzle.row_solver!=0 and my_puzzle.column_solver!=0 and counter<10):
+    counter+=1    
+
 
 print("***********THIS IS __str__**************")
 print(my_puzzle)

@@ -37,12 +37,10 @@ class PUZZLE():
     def __repr__(self):
 
         for j,i in self.puzzle.items():
-            print("  ")
-            #print("START ROW")
+            print("  ")           
             print(f'ROW {j}')
             my_list=[i[k].value for k in range(1,10)]
-            print(my_list)   
-            
+            print(my_list)               
             print("END of ROW")
             print("  ")    
         return f'The above printing shows the values of sudoku row by row'    
@@ -105,6 +103,10 @@ class PUZZLE():
                 if len(newDict) ==1:
                     self.puzzle[row][column].value=list(newDict.keys())[0]
                     counter+=1
+                    value= self.puzzle[row][column].value
+                    self.reserve_row(row,value)
+                    self.reserve_column(column,value)
+                    self.reserve_square(row,column,value)
         
         return counter
 
@@ -118,6 +120,10 @@ class PUZZLE():
                 newDict = dict(filter(lambda elem: elem[1] == 0, cell[column].pos_nums.items()))
                 if len(newDict) ==1:
                     self.puzzle[row][column].value=list(newDict.keys())[0]
-                    counter+=1
+                    counter+=1 
+                    value=self.puzzle[row][column].value
+                    self.reserve_row(row,value)
+                    self.reserve_column(column,value)
+                    self.reserve_square(row,column,value)
         
         return counter    
