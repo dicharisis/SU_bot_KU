@@ -12,9 +12,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
 
 
+start=time.time()
 os.chdir('utils')
 chrome_driver_path=os.getcwd()
 os.chdir('..')
@@ -30,26 +30,43 @@ except TimeoutException:
     print("Page loading took too much")
 
 
+
 robot=Robot(chrome)
 
 difficulty=input('Select the difficulty of Sudoku : easy || medium || hard || expert :')
-robot.select_difficulty(difficulty)
+
+if robot.select_difficulty(difficulty):
+    pass
+
 
 
 parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
 
+
 my_puzzle.check_puzzle
 
-counter=0
-while(my_puzzle.row_solver!=0 and my_puzzle.column_solver!=0 and counter<10):
-    counter+=1    
+
+robot.solve_the_puzzle(my_puzzle,parser.parsed_page)
+
+# if my_puzzle.solver_level_1:
+
+#     print("***********THIS IS __str__**************")
+#     print(my_puzzle)
+#     print("")
+#     print("***********THIS IS __repr__*************")
+#     print([my_puzzle])
+        
 
 
-print("***********THIS IS __str__**************")
-print(my_puzzle)
-print("")
-print("***********THIS IS __repr__*************")
-print([my_puzzle]
-)
+
+# end=time.time()
+
+
+# print(f"program took {end-start} seconds to complete")
+# chrome.close()
+          
+
+
+

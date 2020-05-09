@@ -10,3 +10,7 @@ dictOfNames = {
 newDict = dict(filter(lambda elem: elem[0] % 2 == 0, dictOfNames.items()))
 print('Filtered Dictionary : ')
 print(newDict)
+
+fr='hello'
+
+print("this is my var %s",fr)

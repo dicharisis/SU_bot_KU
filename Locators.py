@@ -1,8 +1,9 @@
 class Locators():
 
-    #Locator foe selecting difficulty
-    SEL_DIF_BUTTON='div.difficulty-label div.dropdown-arrow.icon-arrow-dropdown'
-    SEL_DIF_OPT='div.difficulty-menu ul > li > a'
+    #Locator for selecting difficulty
+    
+    SEL_DIF_BUTTON='difficulty-menu-select '
+    SEL_DIF_OPT=' div.difficulty-menu ul > li > a'
     
     
     #Locators for Getting the puzzle and solving it
@@ -14,4 +15,6 @@ class Locators():
     LEVEL_2='svg > path'
 
     LEVEL_3='d'
+   
+   #Locators for the cells to be selected
    

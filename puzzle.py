@@ -27,6 +27,8 @@ class PUZZLE():
                 cells_of_obj={}
                 
                 
+    def __getitem__(self,pos):
+        return self.puzzle[pos[0]][pos[1]].value
 
     def __str__(self):       
         
@@ -127,3 +129,23 @@ class PUZZLE():
                     self.reserve_square(row,column,value)
         
         return counter    
+
+    @property
+    def solver_level_1(self):
+
+        counter=1
+        while(self.row_solver!=0 and self.column_solver!=0) :
+            counter+=1
+        
+        for row in range(1,10):
+            for column in range(1,10):
+                if self.puzzle[row][column].value==0:
+                    
+                    print("Puzzle can not be solved with Solver Level 1")      
+                    return 0 
+
+        
+        
+        
+        print(f"Puzzle solved with Solver Level 1 in {counter} steps")
+        return 1
