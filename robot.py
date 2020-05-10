@@ -1,6 +1,8 @@
 from Locators import Locators
 from puzzle import PUZZLE
 
+import time
+
 from collections import defaultdict
 
 from selenium.webdriver.support.ui import WebDriverWait,Select
@@ -47,6 +49,7 @@ class Robot():
         
         except NoSuchElementException:
             print(f"Can not find Locator {Locators.SEL_DIF_OPT}")
+            raise NoSuchElementException
         
         except TimeoutException:
             print("Too many time to find difficulty link")  
@@ -59,7 +62,7 @@ class Robot():
         return WebDriverWait(self.browser,10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)))
         
     @property
-    def select_cell(self):
+    def find_cell(self):
 
         try:
             WebDriverWait(self.browser,10).until(EC.presence_of_all_elements_located(  (By.CSS_SELECTOR,Locators.MAIN_LOCATOR) ))
@@ -75,30 +78,35 @@ class Robot():
             yield element          
     
     
-    def solve_the_puzzle(self,solved_puzzle,unsolved_puzzle):
-       
-        unsolved=defaultdict(dict)
-        notsolved_puzzle=PUZZLE(unsolved_puzzle)
+    def solve_the_puzzle(self,solved_list,elements,unsolved_list):
         
+        try:    
+            buttons=self.browser.find_elements_by_css_selector(Locators.BUTTON_NUM)         
        
         
-        for row in range(1,10):
-            for column in range(1,10):
+        except NoSuchElementException: 
+            print("**MAIN LOCATOR***NOTHING FOUND*****")
+
+
+        print(f'Length of solved = {len(solved_list)} Length of elements = {len(elements)} Length of unsolved = {len(unsolved_list)} Length of buttons= {len(buttons)}')
+       
+        for index,item in enumerate(unsolved_list):
+
+            if item!=0:
                 
-                val=notsolved_puzzle.__getitem__((row,column))
-                if val!=0:
-                    unsolved[row][column]=val
+                continue
+            
+            else:
+                time.sleep(0.5)
+                self.browser.execute_script("arguments[0].click();", elements[index])
+                time.sleep(0.5)
+                self.browser.execute_script("arguments[0].click()",buttons[ solved_list[index]-1 ])
+        
+
+
 
         
-        gen=self.select_cell
+
+
+       
         
-        for row in range(1,10):
-            for column in range(1,10):
-                value=solved_puzzle.puzzle[row][column].value
-                element=next(gen)
-                cell=element.find_element_by_css_selector(Locators.LEVEL_1)
-                self.browser.execute_script("arguments[0].click();", cell)
-                return 0
-                
-  
-                

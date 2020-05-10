@@ -16,5 +16,7 @@ class Locators():
 
     LEVEL_3='d'
    
-   #Locators for the cells to be selected
+   #Locators for the buttons numbers to be selected
+
+    BUTTON_NUM='div.numpad-item'
    

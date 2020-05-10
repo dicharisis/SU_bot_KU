@@ -18,9 +18,29 @@ class Parser():
     @property
     def parse_page(self):
 
-        
-        #Find all elements of Locator.LEVEL_1 
         print("******Parsing*********")
+
+        #Find all elements of Locator.MAIN_LOCATOR  
+
+        print(f'Find web elements with tag ({Locators.MAIN_LOCATOR})')  
+
+        # try:
+        #     WebDriverWait(self.browser,10).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
+        try:    
+            self.parsed_elements=self.browser.find_elements_by_css_selector(Locators.MAIN_LOCATOR)  
+        
+        # except TimeoutException:
+        #     print(f"Too many time to Locate {Locators.MAIN_LOCATOR} ")
+        
+        except NoSuchElementException: 
+            
+            print("**MAIN LOCATOR***NOTHING FOUND*****")
+
+
+
+        
+        #Find all elements of Locator.LEVEL_1  
+
         print(f'Find web elements with tag ({Locators.LEVEL_1})')  
 
         try:
@@ -95,8 +115,8 @@ class Parser():
                 sudoku_nums_list.append(0)    
 
 
-
-        self.parsed_page=sudoku_nums_list
+        self.unsolved=sudoku_nums_list
+        
         return sudoku_nums_list
 
            

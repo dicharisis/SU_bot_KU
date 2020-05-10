@@ -13,15 +13,30 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
+#**********CREATE EXECUTABLE PATH FOR chrome driver**************
 
 start=time.time()
 os.chdir('utils')
 chrome_driver_path=os.getcwd()
 os.chdir('..')
 
+#*****************************************************************
+
+
+
+
+
+#**********INSTANTIATE chrome web driver wiht "https://sudoku.com/"*
+
 chrome=webdriver.Chrome(executable_path=chrome_driver_path+"/chromedriver")
 chrome.get("https://sudoku.com/")
 
+#*******************************************************************
+
+
+
+
+#********FIND IF ALL DESIRED ELEMENTS EXIST*********************
 
 try:
     WebDriverWait(chrome,11).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
@@ -29,28 +44,41 @@ try:
 except TimeoutException:
     print("Page loading took too much")
 
+#**************************************************************** 
 
 
+
+
+
+
+#*******Rbobot SELECT DIFFICULTY********************************
 robot=Robot(chrome)
 
 difficulty=input('Select the difficulty of Sudoku : easy || medium || hard || expert :')
 
 if robot.select_difficulty(difficulty):
     pass
+#****************************************************************
 
 
-
+#*******PUZZLE SOLVER LOGIC**************************************
 parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
 
+solved=my_puzzle.solve()
 
-my_puzzle.check_puzzle
+#****************************************************************
 
 
-robot.solve_the_puzzle(my_puzzle,parser.parsed_page)
+#***********ROBOT SOLVES THE PUZZLE IF CAN BE SOLVED************* 
+#if solved:
+ #   robot.solve_the_puzzle(solved,parser.parsed_elements,parser.unsolved)
+#****************************************************************
 
-# if my_puzzle.solver_level_1:
+
+
+
 
 #     print("***********THIS IS __str__**************")
 #     print(my_puzzle)
