@@ -66,7 +66,8 @@ parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
 
-solved=my_puzzle.solve()
+print([my_puzzle])
+#solved=my_puzzle.solve()
 
 #****************************************************************
 
