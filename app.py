@@ -2,6 +2,7 @@ from Parser import Parser
 from Locators import Locators
 from puzzle import PUZZLE
 from robot import Robot
+from calculator import Calculator
 
 import os
 import time
@@ -66,15 +67,23 @@ parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
 
-print([my_puzzle])
-#solved=my_puzzle.solve()
+my_calc=Calculator(my_puzzle)
+
+if my_calc.simple_solver():
+    print(type(my_calc.pzl_to_solve))
+    print([my_calc.pzl_to_solve])
+
+
+
+
+solved=my_calc.pzl_to_solve.solution()
 
 #****************************************************************
 
 
 #***********ROBOT SOLVES THE PUZZLE IF CAN BE SOLVED************* 
-#if solved:
- #   robot.solve_the_puzzle(solved,parser.parsed_elements,parser.unsolved)
+if solved:
+    robot.solve_the_puzzle(solved,parser.parsed_elements,parser.unsolved)
 #****************************************************************
 
 

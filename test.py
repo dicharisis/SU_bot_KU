@@ -10,7 +10,12 @@ dictOfNames = {
 newDict = dict(filter(lambda elem: elem[0] % 2 == 0, dictOfNames.items()))
 print('Filtered Dictionary : ')
 print(newDict)
+from puzzle import CELL
 
-fr='hello'
+mylist={1:{1:CELL(1),2:CELL(2),3:CELL(3)}}
 
-print("this is my var %s",fr)
+value=4
+for cell in mylist[1].values():
+
+    print(cell.pos_nums)
+   

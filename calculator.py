@@ -1,130 +1,390 @@
-  
+from puzzle import PUZZLE
 
+from collections import defaultdict
 
 class Calculator():
 
-    def reserve_row(self,row,value):
+    def __init__(self,puzzle):
+
+        self.pzl_to_solve = puzzle
+   
+
+
+
+    def select_square(self,row,column):
         
-        for cell in self.puzzle[row].values():
-             cell.pos_nums[value]=1 
+        
+        #SET min_row
+        if row < 4:
+            min_row = 1
+       
+        elif row < 7:
+            min_row = 4
+       
+        elif row < 10:
+            min_row = 7       
+        
+        #SET min_column
+        if column < 4:
+            min_column = 1
+        
+        elif column < 7:
+            min_column = 4
+        
+        elif column < 10:
+            min_column = 7   
+
+        max_row = min_row+3
+        max_column = min_column+3    
+
+        return (min_row,min_column,max_row,max_column )
+
+
+#******Reserve Methods******************************
+    def reserve_row(self,row,value):
+        print("**IN RESERVE ROW")
+        
+        for k,cell in self.pzl_to_solve.puzzle[row].items():
+                 
+            if  cell.value == 0:
+                if cell.pos_nums[value] == 0:
+                    cell.pos_nums[value] = 1 
+                    print(f" \t RESERVING value = {value} in row = {row} column = {k}  in cell poss_nums ={cell.pos_nums} ")
+                    print("\t***************")
 
         return self    
+    
     
     
     def reserve_column(self,column,value):
-        
-        for row in self.puzzle.values():
-           row[column].pos_nums[value]=1
+        print("**IN RESERVE Column")
+       
+        for k,row in self.pzl_to_solve.puzzle.items():       
+           
+            if row[column].value == 0:
+                
+                if row[column].pos_nums[value] == 0:
+                    row[column].pos_nums[value] = 1
+                    print(f" \t RESERVING value = {value} in row = {k} column = {column}  in cell poss_nums = {row[column].pos_nums} ")
+                    print("\t***************")
        
         return self    
     
-    def reserve_square(self,row,column,value):
-
-        if row<4:
-            min_row=1
-        elif row<7:
-            min_row=4
-        elif row<10:
-            min_row=7       
    
-        if column<4:
-            min_column=1
-        elif column<7:
-            min_column=4
-        elif column<10:
-            min_column=7   
+    
+    def reserve_square(self,row,column,value):
+        print("**IN RESERVE SQUARE")
+        
+      
+        min_row,min_column,max_row,max_column=self.select_square(row,column)
+        
+      
+        for row_temp in range(min_row,max_row):
+            for column_temp in range(min_column,max_column):
+                
+                if self.pzl_to_solve.puzzle[row_temp][column_temp].value == 0:
+                    if self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums[value] == 0:
+                        self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums[value] = 1   
 
-        for row in range(min_row,min_row+3):
-            for column in range(min_column,min_column+3):
-                self.puzzle[row][column].pos_nums[value]=1    
-
+                        print(f'\tRESERVING value = {value} in row = {row_temp} column = {column_temp}  in cell poss_nums = {self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums}') 
+                        print("\t***************")
         return self
 
-    @property
-    def check_puzzle(self):
+#***********END of Reserve Methods****************************
 
+
+
+
+#*******Reserve,row,column and square , cell by cell******
+    
+    def check_puzzle(self):
+        print("IN CHECK PUZZLE")
+        
         for row in range(1,10):
+            
             for column in range(1,10):
-                if self.puzzle[row][column].value!=0:
-                    value=self.puzzle[row][column].value
+                
+                if self.pzl_to_solve.puzzle[row][column].value != 0:                
+                 
+                
+                    value = self.pzl_to_solve.puzzle[row][column].value
+                    print("\tITERATION IN CHECK PUZZLE")
+                    print(f'\t row = {row} column = {column} value = {value} ')
+                    print("\t***********")
+                   
                     self.reserve_row(row,value)
-                    self.reserve_column(column,value)
+                    self.reserve_column(column,value) 
                     self.reserve_square(row,column,value)       
 
-    @property
-    def row_solver(self):
-        counter=0
-        for row in range(1,10):
-            for column,cell in self.puzzle[row].items():
-                newDict = dict(filter(lambda elem: elem[1] == 0, cell.pos_nums.items()))
-                if len(newDict) ==1:
-                    self.puzzle[row][column].value=list(newDict.keys())[0]
-                    counter+=1
-                    value= self.puzzle[row][column].value
-                    self.reserve_row(row,value)
-                    self.reserve_column(column,value)
-                    self.reserve_square(row,column,value)
-        
-        return counter
+#*********************************************************
 
 
 
-    @property
-    def column_solver(self):
-        counter=0
-        for column in range(1,10):
-            for row,cell in self.puzzle.items():
-                newDict = dict(filter(lambda elem: elem[1] == 0, cell[column].pos_nums.items()))
-                if len(newDict) ==1:
-                    self.puzzle[row][column].value=list(newDict.keys())[0]
-                    counter+=1 
-                    value=self.puzzle[row][column].value
-                    self.reserve_row(row,value)
-                    self.reserve_column(column,value)
-                    self.reserve_square(row,column,value)
-        
-        return counter    
 
     
+    def row_solver(self):
+        print("ROW SOLVER")
+
+        single = 0
+        doubles = defaultdict(dict)
+        
+        for num in range(1,10):
+            
+            for row in range(1,10):
+                check_list = []
+                
+                for column,cell in self.pzl_to_solve.puzzle[row].items():
+                    
+                    if cell.pos_nums[num] == 0:
+                        check_list.append(column)
+                    print(f"Row Solver for num = {num} is in row = {row} column = {column} with check list = {check_list}")
+
+                    if len(check_list) > 2:
+                        print(f"break for row = {row} column = {column}")
+                        break
+
+
+                if len(check_list) == 1 :
+                    self.pzl_to_solve.puzzle[row][check_list[0]].value = num  
+                    self.pzl_to_solve.puzzle[row][check_list[0]].pos_nums={i:1 for i in self.pzl_to_solve.puzzle[row][check_list[0]].pos_nums }                  
+                   
+                    print("ROW SOLVER SOLVES")
+                    print("\t********")
+                    print(f'\trow = {row} column = {check_list[0]}')
+                    print(f'\tnum = {num}')  
+                    print("\t********")
+                 
+                    self.reserve_column(check_list[0],num)
+                   
+                    self.reserve_square(row,check_list[0],num)
+                   
+                    single += 1
+             
+            
+                elif len(check_list) == 2:
+
+                    doubles[num][row] = check_list
+        
+        return single,doubles
+
+
+
+
+    
+    def column_solver(self):
+        print("COLUMN SOLVER")
+        single = 0
+        doubles = defaultdict(dict)
+        
+        for num in range(1,10):
+
+            for column in range(1,10):
+                check_list = []
+                
+                for row in range(1,10):
+                    cell=self.pzl_to_solve.puzzle[row][column]
+                    
+                    if cell.pos_nums[num] == 0:
+                        check_list.append(row)
+
+                    if len(check_list) > 2:
+                        break 
+               
+
+
+
+                if len(check_list) == 1:
+                    self.pzl_to_solve.puzzle[check_list[0]][column].value = num 
+                    self.pzl_to_solve.puzzle[check_list[0]][column].pos_nums={i:1 for i in self.pzl_to_solve.puzzle[check_list[0]][column].pos_nums}  
+                    
+                    print("COLUMN SOLVER SOLVES")
+                    print("\t********")
+                    print(f'\trow = {check_list[0]} column = {column} ')
+                    print(f'\tnum = {num}')  
+                    print("\t********")
+                    self.reserve_row(check_list[0],num)
+                    self.reserve_square(check_list[0],column,num)
+
+                    single += 1
+             
+                elif len(check_list) == 2:
+
+                    doubles[num][column] = check_list
+        
+        return single,doubles   
+      
+
+
+
+
+    
+    def square_solver(self):      
+        
+        print("SQUARE SOLVER")
+        
+        single = 0
+        doubles = defaultdict(dict) 
+        
+        for min_row in range(1,8,3):
+       
+            for min_column in range(1,8,3):
+
+                for num in range(1,10):                
+                    check_list=[]
+
+                    for row in range(min_row,min_row+3):
+                        
+                        for column in range(min_column,min_column+3):
+
+                            cell=self.pzl_to_solve.puzzle[row][column]
+                            
+                            if cell.pos_nums[num] == 0:
+                                check_list.append( (row,column) )
+                                
+
+                            if len(check_list) > 2:
+                                
+                                break    
+                        
+
+                        if len(check_list) > 2:
+                                
+                                break             
+               
+                
+
+                
+
+                if len(check_list) == 1:
+                    
+                    self.pzl_to_solve.puzzle[check_list[0][0]][check_list[0][1]].value = num
+                    self.pzl_to_solve.puzzle[check_list[0][0]][check_list[0][1]].pos_nums={i:1 for i in self.pzl_to_solve.puzzle[check_list[0][0]][check_list[0][1]].pos_nums}  
+                    
+                    print("SQUARE SOLVER SOLVES")
+                    print("\t********")
+                    print(f'\trow = {check_list[0][0]} column = {check_list[0][1]} ')
+                    print(f'\tnum = {num}')  
+                    print("\t********")
+                   
+                    self.reserve_row( check_list[0][0] , num )
+                    self.reserve_column( check_list[0][1] , num )
+
+
+                    single += 1
+
+                elif len(check_list) == 2:
+                    
+                    doubles[num][(min_row,min_column)]=check_list
+
+        return single,doubles       
+
+
+
+    
+    def cell_solver(self):
+        print("CELL SOLVER")
+        single = 0
+        doubles = defaultdict(dict)   
+
+        for row in range(1,10):
+        
+            for column,cell in self.pzl_to_solve.puzzle[row].items():
+                check_list =  [ ] 
+                 
+                for num in range(1,10):
+                    
+                    if cell.pos_nums[num] == 0:
+                        check_list.append( num )
+                       
+                    
+                    if len(check_list) > 2:
+                        
+                        break
+                    
+                if len(check_list) == 1:
+                    self.pzl_to_solve.puzzle[row][column].value = check_list[0]
+                    
+                   
+                    print("CELL SOLVER SOLVES")
+                    print("\t********")
+                    print(f'\trow = {row} column = {column}')
+                    print(f'\t num = {check_list[0]}')  
+                    print("\t********")
+                    print(self.pzl_to_solve.puzzle[row][column].pos_nums)
+                    
+                    self.reserve_row( row,check_list[0] )
+                    self.reserve_column( column,check_list[0] )
+                    self.reserve_square( row,column,check_list[0] )
+
+                    single += 1
+
+                elif len(check_list) == 2:
+
+                    doubles[row][column]=check_list
+
+        return single,doubles            
+         
+
+    
+                
+
+
     def simple_solver(self):
+
+       
         
-        self.check_puzzle
+        self.check_puzzle()
         
-        solved_list=[]
         counter=1
         
-        while(self.row_solver!=0 and self.column_solver!=0) :
-            counter+=1
-        
+        while(True  ):
+            cell_solv=self.row_solver()[0]
+            row_solv=self.cell_solver()[0] 
+            col_solv= self.column_solver()[0]
+            squ_solv= self.square_solver()[0]
+            
+            counter+=1 
+            if row_solv==0:
+                if col_solv==0:
+                    if squ_solv==0:
+                        if cell_solv==0:
+                            break
+
+             
+
+        print([self.pzl_to_solve])
+
         for row in range(1,10):
-            for column in range(1,10):
-                if self.puzzle[row][column].value==0:
+            for column in range(1,10):                
+                
+                if self.pzl_to_solve.puzzle[row][column].value==0:
                     
-                    print("Puzzle can not be solved with Simple Solver")      
+                    print("Puzzle can not be solved with Simple Solver")    
+                    self.pzl_to_solve.solved = False  
                     return 0 
 
-                else:
-                    solved_list.append(self.puzzle[row][column].value)
-        
-        
+                
+                   
+                   
+                
         print(f"Puzzle solved with Solver Level 1 in {counter} steps")
-        return solved_list
-
+        self.pzl_to_solve.solved = True 
+        return 1
     
     
-    def solve(self):
+    # def solve(self):
         
-        simple_solver=self.simple_solver()
+    #     simple_solver=self.simple_solver()
         
         
-        if simple_solver==0:
+    #     if simple_solver==0:
  
-            self.advanced_solver()
-            return 0
+    #         #self.advanced_solver()
+    #         return 0
 
-        else:
+    #     else:
 
-            return simple_solver   
+    #         return simple_solver   
 
 
 
@@ -132,57 +392,57 @@ class Calculator():
     
     
    
-    def advanced_solver(self):
+    # def advanced_solver(self):
         
-        possibs_in_row=defaultdict(dict)
-        possibs_combinations=0
-        #counter=0
-        for row in range(1,10):
-            for column,cell in self.puzzle[row].items():
-                newDict = dict(filter(lambda elem: elem[1] == 0, cell.pos_nums.items()))
-                if len(newDict) ==2:
-                   possibs_in_row[row][column]=newDict
+    #     possibs_in_row=defaultdict(dict)
+    #     possibs_combinations=0
+    #     #counter=0
+    #     for row in range(1,10):
+    #         for column,cell in self.puzzle[row].items():
+    #             newDict = dict(filter(lambda elem: elem[1] == 0, cell.pos_nums.items()))
+    #             if len(newDict) ==2:
+    #                possibs_in_row[row][column]=newDict
         
-        for value in possibs_in_row.values():
-            possibs_combinations+=len(value)
-            print(value)           
+    #     for value in possibs_in_row.values():
+    #         possibs_combinations+=len(value)
+    #         print(value)           
 
-        # possibs_combinations=int(math.pow(2,possibs_combinations))
-        # print(f'Possible combinations in row = {possibs_combinations}')
+    #     # possibs_combinations=int(math.pow(2,possibs_combinations))
+    #     # print(f'Possible combinations in row = {possibs_combinations}')
 
-        self.try_the_combinations(possibs_in_row,possibs_combinations)
+    #     self.try_the_combinations(possibs_in_row,possibs_combinations)
 
     
     
     
-    def try_the_combinations(self,possibs_in_row,combinations):
+    # def try_the_combinations(self,possibs_in_row,combinations):
         
-        bin_list=[]
-        temp=dict(self.puzzle)
+    #     bin_list=[]
+    #     temp=dict(self.puzzle)
 
 
-        print(f"bin_list length = {len(bin_list)}")    
+    #     print(f"bin_list length = {len(bin_list)}")    
             
 
 
-        for combination in range(int(math.pow(2,combinations))):
+    #     for combination in range(int(math.pow(2,combinations))):
             
-            # binary=bin(int(math.pow(2,comb)))
+    #         # binary=bin(int(math.pow(2,comb)))
       
-            # print(f'binary list = {len(binary[2:])}') 
+    #         # print(f'binary list = {len(binary[2:])}') 
             
-            # for j,item in enumerate(binary[2:]):
+    #         # for j,item in enumerate(binary[2:]):
             
-           bin_list[j]=self.convert(combination)
+    #        bin_list[j]=self.convert(combination)
 
              
-            index=0
+    #         index=0
         
-            for row,items in possibs_in_row.items():
-                for column,item in items.items():
-                    key=list(item.keys())                        
-                    temp[row][column].pos_nums[ key[bin_list[index]]  ]=1
-                    index+=1
+    #         for row,items in possibs_in_row.items():
+    #             for column,item in items.items():
+    #                 key=list(item.keys())                        
+    #                 temp[row][column].pos_nums[ key[bin_list[index]]  ]=1
+    #                 index+=1
                           
             
-                    print(temp[row][column].pos_nums) 
+    #                 print(temp[row][column].pos_nums) 

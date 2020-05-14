@@ -27,9 +27,10 @@ class PUZZLE():
                 row+=1
                 cells_of_obj={}
                 
+        self.solved=False        
                 
     def __getitem__(self,pos):
-        return self.puzzle[pos[0]][pos[1]].value
+         return self.puzzle[pos[0]][pos[1]].value
 
     def __str__(self):       
         
@@ -55,16 +56,21 @@ class PUZZLE():
 
   
             
-    def solve(self):
+    def solution(self):
         
-        solution=[]
-        
-        for row in range(1,10):
-            for column in range(1,10):
-                
-                solution.append(self.puzzle[row][column].value)
+        if self.solved:
 
-        return solution        
+            solution=[]
+            
+            for row in range(1,10):
+                for column in range(1,10):
+                    
+                    solution.append(self.puzzle[row][column].value)
+
+            return solution    
+
+        else:
+             return 0        
     
     
        
