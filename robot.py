@@ -88,7 +88,7 @@ class Robot():
             print("**MAIN LOCATOR***NOTHING FOUND*****")
 
 
-        print(f'Length of solved = {len(solved_list)} Length of elements = {len(elements)} Length of unsolved = {len(unsolved_list)} Length of buttons= {len(buttons)}')
+        print(f'Robot says :Number of solved = {len(solved_list)} Number of elements = {len(elements)} Number of unsolved = {len(unsolved_list)} Number of buttons= {len(buttons)}')
        
         for index,item in enumerate(unsolved_list):
 

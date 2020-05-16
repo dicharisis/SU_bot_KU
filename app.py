@@ -63,6 +63,7 @@ if robot.select_difficulty(difficulty):
 
 
 #*******PUZZLE SOLVER LOGIC**************************************
+
 parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
@@ -73,24 +74,23 @@ my_calc=Calculator(my_puzzle)
 my_calc.check_puzzle()
 
 if my_calc.solver():
-    print(type(my_calc.pzl_to_solve))
+    
+    #Print solved puzzle
     print([my_calc.pzl_to_solve])
+    
+    #Convert puzzle to list if it is solved in order robot can solve it.
     solved=my_calc.pzl_to_solve.solution()
-
-#****************************************************************
-
-
-#***********ROBOT SOLVES THE PUZZLE IF CAN BE SOLVED************* 
-if solved:
+    
+    #***********ROBOT SOLVES THE PUZZLE IF CAN BE SOLVED************* 
     robot.solve_the_puzzle(solved,parser.parsed_elements,parser.unsolved)
-#****************************************************************
 
+#****************************************************************
 
 
 end=time.time()
 
 
-print(f"program took {end-start} seconds to complete")
+print(f"App took {end-start} seconds to complete")
 chrome.close()
           
 

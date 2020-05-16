@@ -242,8 +242,7 @@ class Calculator():
 
                         if len(check_list) > 2:
                                 
-                                break             
-               
+                                break                   
                 
 
                 
@@ -329,11 +328,11 @@ class Calculator():
             return 1
 
         else:
-             if self.advanced_solver(self.csolver):
-                 return 1
-             else:
-                 return 0    
-
+            if self.advanced_solver():
+                return 1    
+            
+            else:
+                return 0 
 
     
                 
@@ -344,7 +343,6 @@ class Calculator():
         
         print([self.pzl_to_solve])
 
-        counter=1
         
         while(True  ):
             cell_solv=self.row_solver()[0]
@@ -352,88 +350,130 @@ class Calculator():
             col_solv= self.column_solver()[0]
             squ_solv= self.square_solver()[0]
             
-            counter+=1 
-            if row_solv==0:
-                if col_solv==0:
-                    if squ_solv==0:
-                        if cell_solv==0:
-                            break
+           
+            if row_solv==0 and col_solv==0 and squ_solv==0 and cell_solv==0:
+                break
 
-             
-
+        self.rsolver=(self.row_solver()[1],'Rsolver')                  
+        self.csolver=(self.cell_solver()[1],'Csolver')
+        self.colsolver=(self.column_solver()[1],'Colsolver')
+        self.sqsolver=(self.square_solver()[1],'Sqsolver')     
+        
 
         for row in range(1,10):
             for column in range(1,10):                
                 
                 if self.pzl_to_solve.puzzle[row][column].value==0:
                     
-                    print("Puzzle can not be solved with Simple Solver")   
-                   
-                    self.rsolver=self.row_solver()[1]
-                    self.csolver=self.cell_solver()[1]
-                    self.colsolver=self.column_solver()[1]
-                    self.sqsolver=self.square_solver()[1]
-          
-
-                    return 0
-                    
-                  
-                   
-                   
+                    print("Puzzle can not be solved with Simple Solver")                  
+                    return 0             
+                               
                 
-       
+                      
         self.pzl_to_solve.solved = True 
         return 1
     
 
     
     
-    def advanced_solver(self,solver):
+    def advanced_solver(self):
         
-        bin_list=[]       
         
+        bin_list=[]               
         temp=copy.deepcopy(self.pzl_to_solve.puzzle)
+
+        sequence=self.select_solver_sequence()       
         
-        possibs=[len(item) for i,item in solver.items() ]
-            
-        combinations= (2**sum(possibs))        
+
+        for solver in sequence:   
+            possibs=[len(item) for item in solver[0].values() ]            
+            combinations= (2**sum(possibs))     
         
-        print(sum(possibs))
-        print(combinations)
+            print(f'Pairs = {sum(possibs)}')
+            print(f'Possible combinations = 2^pairs = {combinations}')
 
-        for combination in range(combinations):
+            for combination in range(combinations):            
+            
+                bin_list=self.convert(combination,sum(possibs))        
 
+                print(f'Solver\'s contents are: {solver[0]}')
+                print(f"Trying combination {combination}")
+                print(f'in binary {bin_list}')   
             
             
-            bin_list=self.convert(combination,sum(possibs))           
+                self.advanced_worker(solver,bin_list)
 
-             
-            index=0
-            print("")
-            print("*******************************")
-            for row,elements in solver.items():
-                for column,item in elements.items():
-                    print(bin_list)
-                    print(f'row = {row} column = {column} item = {item}')                        
-                    self.pzl_to_solve.puzzle[row][column].pos_nums[ item[ bin_list[index]]  ] = 1
-                    index+=1
-                          
-            
-                    print(self.pzl_to_solve.puzzle[row][column].pos_nums) 
-
-            if self.simple_solver():
-                print("Puzzle solved with advanced solver")
-                print(f'the combination is {combination} in binary = {bin_list}' )
-                return 1
-            else:
-                self.pzl_to_solve.puzzle= copy.deepcopy(temp)
+                if self.simple_solver():
+                    print(f"Puzzle solved with advanced solver -> {solver[1]}")
+                    print(f'The combination is {combination} binary = {bin_list}  in total combinations {combinations}' )
+               
+                    return 1
+           
+                else:
+                    print("Trying next combination")
+                    self.pzl_to_solve.puzzle= copy.deepcopy(temp)
                         
     
         return 0     
 
 
 
+    def advanced_worker(self,solver,bin_list):
 
+        if solver[1]=='Csolver':
+            index=0
+            for row,elements in solver[0].items():
+                for column,item in elements.items():
+                    #print(bin_list)
+                    #print(f'row = {row} column = {column} item = {item}')                        
+                    self.pzl_to_solve.puzzle[row][column].pos_nums[ item[ bin_list[index]]  ] = 1
+                    index+=1                         
+            
+                    print(self.pzl_to_solve.puzzle[row][column].pos_nums) 
+
+        elif solver[1]=='Rsolver':
+            
+            index=0
+            for num,elements in solver[0].items():
+                for row,column_list in elements.items():
+                    #print(bin_list)
+                    #print(f'row = {row} num = {num} column = {column_list[bin_list[index]]} ')                        
+                    self.pzl_to_solve.puzzle[row][ column_list[ bin_list[index] ]].pos_nums ={ i:1 if i!=num else 0 for i in  self.pzl_to_solve.puzzle[row][ column_list[ bin_list[index] ]].pos_nums} 
+                    
+                    index+=1                         
+        
+       
+        elif solver[1]=='Colsolver':
+            index=0
+            for num,elements in solver[0].items():
+                for column,row_list in elements.items():
+                    #print(bin_list)
+                    #print(f'row = {row_list[bin_list[index]]} num = {num} column = {column} ')                        
+                    self.pzl_to_solve.puzzle[row_list[bin_list[index]]][column].pos_nums ={ i:1 if i!=num else 0 for i in  self.pzl_to_solve.puzzle [row_list[bin_list[index]]] [column].pos_nums} 
+                    
+                    index+=1                       
+
+                    
+
+
+    def select_solver_sequence(self):
+        
+        cell_solver_size=( sum( [ len(i) for i in self.csolver[0].values() ] ),self.csolver )
+        column_solver_size=( sum( [ len(i) for i in self.colsolver[0].values() ] ),self.colsolver )
+        row_solver_size=(sum( [ len(i) for i in self.rsolver[0].values() ] ),self.rsolver )
+        
+        
+        
+        sorted=[cell_solver_size,column_solver_size,row_solver_size]
+
+        sorted.sort(key=lambda x: x[0])
+       
+        for j in sorted:
+            print(f'Solver {j[1][1]} has {j[0]} pairs')        
+        
+        result = [x[1] for x in sorted ]
+
+        return result
 
 
     

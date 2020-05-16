@@ -24,19 +24,14 @@ class Parser():
 
         print(f'Find web elements with tag ({Locators.MAIN_LOCATOR})')  
 
-        # try:
-        #     WebDriverWait(self.browser,10).until( EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)) )
         try:    
             self.parsed_elements=self.browser.find_elements_by_css_selector(Locators.MAIN_LOCATOR)  
         
-        # except TimeoutException:
-        #     print(f"Too many time to Locate {Locators.MAIN_LOCATOR} ")
+       
         
         except NoSuchElementException: 
             
             print("**MAIN LOCATOR***NOTHING FOUND*****")
-
-
 
         
         #Find all elements of Locator.LEVEL_1  
@@ -71,7 +66,7 @@ class Parser():
                 
                 try:
                     web_elements_level_2.append(element.find_element_by_css_selector(Locators.LEVEL_2))   
-                    print("Command executed")
+                    print("Found item in svg > path")
                 
                 except NoSuchElementException:
                     web_elements_level_2.append(0)    
