@@ -1,5 +1,5 @@
 from puzzle import PUZZLE
-
+import copy
 from collections import defaultdict
 
 class Calculator():
@@ -41,41 +41,37 @@ class Calculator():
 
 
 #******Reserve Methods******************************
-    def reserve_row(self,row,value):
-        print("**IN RESERVE ROW")
+    
+    #***ROW***
+    def reserve_row(self,row,value):        
         
-        for k,cell in self.pzl_to_solve.puzzle[row].items():
+        for cell in self.pzl_to_solve.puzzle[row].values():
                  
             if  cell.value == 0:
                 if cell.pos_nums[value] == 0:
                     cell.pos_nums[value] = 1 
-                    print(f" \t RESERVING value = {value} in row = {row} column = {k}  in cell poss_nums ={cell.pos_nums} ")
-                    print("\t***************")
+                    
 
         return self    
     
     
-    
-    def reserve_column(self,column,value):
-        print("**IN RESERVE Column")
+    #***COLUMN***
+    def reserve_column(self,column,value):        
        
-        for k,row in self.pzl_to_solve.puzzle.items():       
+        for row in self.pzl_to_solve.puzzle.values():       
            
             if row[column].value == 0:
                 
                 if row[column].pos_nums[value] == 0:
                     row[column].pos_nums[value] = 1
-                    print(f" \t RESERVING value = {value} in row = {k} column = {column}  in cell poss_nums = {row[column].pos_nums} ")
-                    print("\t***************")
+                  
        
         return self    
     
    
-    
-    def reserve_square(self,row,column,value):
-        print("**IN RESERVE SQUARE")
+    #***SQUARE***
+    def reserve_square(self,row,column,value):      
         
-      
         min_row,min_column,max_row,max_column=self.select_square(row,column)
         
       
@@ -86,8 +82,7 @@ class Calculator():
                     if self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums[value] == 0:
                         self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums[value] = 1   
 
-                        print(f'\tRESERVING value = {value} in row = {row_temp} column = {column_temp}  in cell poss_nums = {self.pzl_to_solve.puzzle[row_temp][column_temp].pos_nums}') 
-                        print("\t***************")
+                       
         return self
 
 #***********END of Reserve Methods****************************
@@ -98,19 +93,14 @@ class Calculator():
 #*******Reserve,row,column and square , cell by cell******
     
     def check_puzzle(self):
-        print("IN CHECK PUZZLE")
         
         for row in range(1,10):
             
             for column in range(1,10):
                 
-                if self.pzl_to_solve.puzzle[row][column].value != 0:                
+                if self.pzl_to_solve.puzzle[row][column].value != 0:               
                  
-                
                     value = self.pzl_to_solve.puzzle[row][column].value
-                    print("\tITERATION IN CHECK PUZZLE")
-                    print(f'\t row = {row} column = {column} value = {value} ')
-                    print("\t***********")
                    
                     self.reserve_row(row,value)
                     self.reserve_column(column,value) 
@@ -134,14 +124,15 @@ class Calculator():
                 check_list = []
                 
                 for column,cell in self.pzl_to_solve.puzzle[row].items():
-                    
-                    if cell.pos_nums[num] == 0:
-                        check_list.append(column)
-                    print(f"Row Solver for num = {num} is in row = {row} column = {column} with check list = {check_list}")
+                    if cell.value == 0:
+                        
+                        if cell.pos_nums[num] == 0:
+                            check_list.append(column)
+                        
 
-                    if len(check_list) > 2:
-                        print(f"break for row = {row} column = {column}")
-                        break
+                        if len(check_list) > 2:
+                            
+                            break
 
 
                 if len(check_list) == 1 :
@@ -150,8 +141,8 @@ class Calculator():
                    
                     print("ROW SOLVER SOLVES")
                     print("\t********")
-                    print(f'\trow = {row} column = {check_list[0]}')
-                    print(f'\tnum = {num}')  
+                    print(f'\tvalue = {num} in ') 
+                    print(f'\trow = {row} column = {check_list[0]}')                    
                     print("\t********")
                  
                     self.reserve_column(check_list[0],num)
@@ -183,12 +174,13 @@ class Calculator():
                 
                 for row in range(1,10):
                     cell=self.pzl_to_solve.puzzle[row][column]
+                    if cell.value == 0:
                     
-                    if cell.pos_nums[num] == 0:
-                        check_list.append(row)
+                        if cell.pos_nums[num] == 0:
+                            check_list.append(row)
 
-                    if len(check_list) > 2:
-                        break 
+                        if len(check_list) > 2:
+                            break 
                
 
 
@@ -199,8 +191,8 @@ class Calculator():
                     
                     print("COLUMN SOLVER SOLVES")
                     print("\t********")
-                    print(f'\trow = {check_list[0]} column = {column} ')
-                    print(f'\tnum = {num}')  
+                    print(f'\tvalue = {num} in ') 
+                    print(f'\trow = {check_list[0]} column = {column} ')                     
                     print("\t********")
                     self.reserve_row(check_list[0],num)
                     self.reserve_square(check_list[0],column,num)
@@ -238,13 +230,14 @@ class Calculator():
 
                             cell=self.pzl_to_solve.puzzle[row][column]
                             
-                            if cell.pos_nums[num] == 0:
-                                check_list.append( (row,column) )
-                                
+                            if cell.value == 0:
+                                if cell.pos_nums[num] == 0:
+                                    check_list.append( (row,column) )
+                                    
 
-                            if len(check_list) > 2:
-                                
-                                break    
+                                if len(check_list) > 2:
+                                    
+                                    break    
                         
 
                         if len(check_list) > 2:
@@ -262,8 +255,8 @@ class Calculator():
                     
                     print("SQUARE SOLVER SOLVES")
                     print("\t********")
-                    print(f'\trow = {check_list[0][0]} column = {check_list[0][1]} ')
-                    print(f'\tnum = {num}')  
+                    print(f'\tvalue = {num} in ') 
+                    print(f'\trow = {check_list[0][0]} column = {check_list[0][1]} ')                    
                     print("\t********")
                    
                     self.reserve_row( check_list[0][0] , num )
@@ -290,51 +283,67 @@ class Calculator():
         
             for column,cell in self.pzl_to_solve.puzzle[row].items():
                 check_list =  [ ] 
+                if self.pzl_to_solve.puzzle[row][column].value == 0:
                  
-                for num in range(1,10):
-                    
-                    if cell.pos_nums[num] == 0:
-                        check_list.append( num )
-                       
-                    
-                    if len(check_list) > 2:
+                    for num in range(1,10):
                         
-                        break
+                        if cell.pos_nums[num] == 0:
+                            check_list.append( num )
+                        
+                        
+                        if len(check_list) > 2:
+                            
+                            break
                     
-                if len(check_list) == 1:
-                    self.pzl_to_solve.puzzle[row][column].value = check_list[0]
+                    if len(check_list) == 1:
+                        self.pzl_to_solve.puzzle[row][column].value = check_list[0]
+                        
                     
-                   
-                    print("CELL SOLVER SOLVES")
-                    print("\t********")
-                    print(f'\trow = {row} column = {column}')
-                    print(f'\t num = {check_list[0]}')  
-                    print("\t********")
-                    print(self.pzl_to_solve.puzzle[row][column].pos_nums)
-                    
-                    self.reserve_row( row,check_list[0] )
-                    self.reserve_column( column,check_list[0] )
-                    self.reserve_square( row,column,check_list[0] )
+                        print("CELL SOLVER SOLVES")
+                        print("\t********")
+                        print(f'\t value = {check_list[0]} in ') 
+                        print(f'\trow = {row} column = {column}')                        
+                        print("\t********")
+                        
+                        
+                        self.reserve_row( row,check_list[0] )
+                        self.reserve_column( column,check_list[0] )
+                        self.reserve_square( row,column,check_list[0] )
 
-                    single += 1
+                        single += 1
 
-                elif len(check_list) == 2:
+                    elif len(check_list) == 2:
 
-                    doubles[row][column]=check_list
+                        doubles[row][column]=check_list
 
         return single,doubles            
          
+
+
+
+
+    def solver(self):
+        
+        if self.simple_solver():
+            print(f"Puzzle solved with Solver Level 1 ")
+            return 1
+
+        else:
+             if self.advanced_solver(self.csolver):
+                 return 1
+             else:
+                 return 0    
+
 
     
                 
 
 
-    def simple_solver(self):
+    def simple_solver(self):           
+                   
+        
+        print([self.pzl_to_solve])
 
-       
-        
-        self.check_puzzle()
-        
         counter=1
         
         while(True  ):
@@ -352,97 +361,90 @@ class Calculator():
 
              
 
-        print([self.pzl_to_solve])
 
         for row in range(1,10):
             for column in range(1,10):                
                 
                 if self.pzl_to_solve.puzzle[row][column].value==0:
                     
-                    print("Puzzle can not be solved with Simple Solver")    
-                    self.pzl_to_solve.solved = False  
-                    return 0 
+                    print("Puzzle can not be solved with Simple Solver")   
+                   
+                    self.rsolver=self.row_solver()[1]
+                    self.csolver=self.cell_solver()[1]
+                    self.colsolver=self.column_solver()[1]
+                    self.sqsolver=self.square_solver()[1]
+          
 
-                
+                    return 0
+                    
+                  
                    
                    
                 
-        print(f"Puzzle solved with Solver Level 1 in {counter} steps")
+       
         self.pzl_to_solve.solved = True 
         return 1
     
+
     
-    # def solve(self):
+    
+    def advanced_solver(self,solver):
         
-    #     simple_solver=self.simple_solver()
+        bin_list=[]       
         
+        temp=copy.deepcopy(self.pzl_to_solve.puzzle)
         
-    #     if simple_solver==0:
- 
-    #         #self.advanced_solver()
-    #         return 0
-
-    #     else:
-
-    #         return simple_solver   
-
-
-
-    
-    
-    
-   
-    # def advanced_solver(self):
-        
-    #     possibs_in_row=defaultdict(dict)
-    #     possibs_combinations=0
-    #     #counter=0
-    #     for row in range(1,10):
-    #         for column,cell in self.puzzle[row].items():
-    #             newDict = dict(filter(lambda elem: elem[1] == 0, cell.pos_nums.items()))
-    #             if len(newDict) ==2:
-    #                possibs_in_row[row][column]=newDict
-        
-    #     for value in possibs_in_row.values():
-    #         possibs_combinations+=len(value)
-    #         print(value)           
-
-    #     # possibs_combinations=int(math.pow(2,possibs_combinations))
-    #     # print(f'Possible combinations in row = {possibs_combinations}')
-
-    #     self.try_the_combinations(possibs_in_row,possibs_combinations)
-
-    
-    
-    
-    # def try_the_combinations(self,possibs_in_row,combinations):
-        
-    #     bin_list=[]
-    #     temp=dict(self.puzzle)
-
-
-    #     print(f"bin_list length = {len(bin_list)}")    
+        possibs=[len(item) for i,item in solver.items() ]
             
+        combinations= (2**sum(possibs))        
+        
+        print(sum(possibs))
+        print(combinations)
 
+        for combination in range(combinations):
 
-    #     for combination in range(int(math.pow(2,combinations))):
             
-    #         # binary=bin(int(math.pow(2,comb)))
-      
-    #         # print(f'binary list = {len(binary[2:])}') 
             
-    #         # for j,item in enumerate(binary[2:]):
-            
-    #        bin_list[j]=self.convert(combination)
+            bin_list=self.convert(combination,sum(possibs))           
 
              
-    #         index=0
-        
-    #         for row,items in possibs_in_row.items():
-    #             for column,item in items.items():
-    #                 key=list(item.keys())                        
-    #                 temp[row][column].pos_nums[ key[bin_list[index]]  ]=1
-    #                 index+=1
+            index=0
+            print("")
+            print("*******************************")
+            for row,elements in solver.items():
+                for column,item in elements.items():
+                    print(bin_list)
+                    print(f'row = {row} column = {column} item = {item}')                        
+                    self.pzl_to_solve.puzzle[row][column].pos_nums[ item[ bin_list[index]]  ] = 1
+                    index+=1
                           
             
-    #                 print(temp[row][column].pos_nums) 
+                    print(self.pzl_to_solve.puzzle[row][column].pos_nums) 
+
+            if self.simple_solver():
+                print("Puzzle solved with advanced solver")
+                print(f'the combination is {combination} in binary = {bin_list}' )
+                return 1
+            else:
+                self.pzl_to_solve.puzzle= copy.deepcopy(temp)
+                        
+    
+        return 0     
+
+
+
+
+
+
+    
+    @staticmethod
+    def convert(combination,combinations):        
+                
+        binary=[int(i) for i in  bin(combination)[2:]]
+        
+        result =[ 0 for i in range((combinations+1)-len(binary))  ]
+        
+        result[-1:]=binary
+        
+        return result
+

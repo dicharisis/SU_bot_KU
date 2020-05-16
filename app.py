@@ -67,16 +67,15 @@ parser=Parser(chrome)
 
 my_puzzle=PUZZLE(parser.extract_info)
 
+
 my_calc=Calculator(my_puzzle)
 
-if my_calc.simple_solver():
+my_calc.check_puzzle()
+
+if my_calc.solver():
     print(type(my_calc.pzl_to_solve))
     print([my_calc.pzl_to_solve])
-
-
-
-
-solved=my_calc.pzl_to_solve.solution()
+    solved=my_calc.pzl_to_solve.solution()
 
 #****************************************************************
 
@@ -88,22 +87,11 @@ if solved:
 
 
 
+end=time.time()
 
 
-#     print("***********THIS IS __str__**************")
-#     print(my_puzzle)
-#     print("")
-#     print("***********THIS IS __repr__*************")
-#     print([my_puzzle])
-        
-
-
-
-# end=time.time()
-
-
-# print(f"program took {end-start} seconds to complete")
-# chrome.close()
+print(f"program took {end-start} seconds to complete")
+chrome.close()
           
 
 

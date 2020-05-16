@@ -72,6 +72,16 @@ class PUZZLE():
         else:
              return 0        
     
+
+    def to_list(self):
+        solution = []
+        
+        for row in range(1,10):
+                for column in range(1,10):
+                    
+                    solution.append(self.puzzle[row][column].value)
+
+        return solution            
     
        
        

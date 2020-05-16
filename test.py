@@ -10,12 +10,17 @@ dictOfNames = {
 newDict = dict(filter(lambda elem: elem[0] % 2 == 0, dictOfNames.items()))
 print('Filtered Dictionary : ')
 print(newDict)
-from puzzle import CELL
 
-mylist={1:{1:CELL(1),2:CELL(2),3:CELL(3)}}
+combinations = 10
+combo=1023
 
-value=4
-for cell in mylist[1].values():
+binary=[int(i) for i in  bin(combo)[2:]]
+print(binary)
 
-    print(cell.pos_nums)
-   
+result=[0 for i in range((combinations+1)-len(binary))] 
+print(result)
+
+
+result[-1:]=binary
+
+print(result)
