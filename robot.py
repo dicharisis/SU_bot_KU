@@ -56,7 +56,7 @@ class Robot():
             raise TimeoutException   
         
         
-        web_elements[index[difficulty]].click()    
+        self.browser.execute_script("arguments[0].click();",web_elements[index[difficulty]])
         
         
         return WebDriverWait(self.browser,10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,Locators.MAIN_LOCATOR)))
